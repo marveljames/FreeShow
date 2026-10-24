@@ -29,7 +29,8 @@
 
     $: activeScriptureId = active || ""
     $: activeScriptures = [activeScriptureId]
-    $: if ($scriptures[activeScriptureId]?.collection?.versions) activeScriptures = $scriptures[activeScriptureId].collection.versions
+    $: if ($scriptures[activeScriptureId]?.collection?.versions) activeScriptures = $scriptures[activeScriptureId].collection.versions=[tamilBibleId,
+    englishBibleId]
 
     $: previewBibleIndex = $scriptures[activeScriptureId]?.collection?.previewIndex || 0
     $: previewBibleId = activeScriptures[previewBibleIndex] || activeScriptures[0]
