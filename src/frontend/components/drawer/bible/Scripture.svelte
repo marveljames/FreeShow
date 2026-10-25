@@ -1502,7 +1502,7 @@
 
     .version-item {
         display: block !important;
-        padding: 3px 6px 3px 8px !important;
+        padding: 3px 6px 3px 0px !important;
         margin: 0 0 8px 0 !important;
         border-left: 4px solid var(--version-color, var(--secondary));
         background: var(--version-bg, transparent);
