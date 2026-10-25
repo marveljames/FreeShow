@@ -29,62 +29,32 @@
         }
     }
 
+    function create() {
+        let versions: string[] = selectedScriptures
 
-function create() {
-    let versions: string[] = [...selectedScriptures]
+        // remove collections and non-string items
+        versions = versions.filter((id) => typeof id === "string") // sometimes the bibles object is added
+        versions = versions.filter((id) => !Object.entries($scriptures).find(([tabId, a]) => (tabId === id || a.id === id) && a.collection !== undefined))
+        if (versions.length < 2) return
 
-    // Remove collections and non-string items
-    versions = versions.filter((id) => typeof id === "string")
-    versions = versions.filter(
-        (id) =>
-            !Object.entries($scriptures).find(
-                ([tabId, a]) =>
-                    (tabId === id || a.id === id) &&
-                    a.collection !== undefined
-            )
-    )
+        let name = ""
+        versions.forEach((id, i) => {
+            if (i > 0) name += " + "
+            if (id.length < 5) {
+                name += id.toUpperCase()
+            } else {
+                const bibleName: string = ($scriptures[id] || Object.values($scriptures).find((a) => a.id === id))?.name || ""
+                name += getShortBibleName(bibleName)
+            }
+        })
 
-    if (versions.length < 2) return
+        scriptures.update((a) => {
+            a[uid()] = { name, collection: { versions } }
+            return a
+        })
 
-    // Put Tamil Bibles first, then English Bibles
-    const getBibleName = (id: string) =>
-        ($scriptures[id] ||
-            Object.values($scriptures).find((a) => a.id === id))?.name || ""
-
-    versions.sort((a, b) => {
-        const nameA = getBibleName(a).toLowerCase()
-        const nameB = getBibleName(b).toLowerCase()
-
-        const isTamilA = /tamil|தமிழ்/.test(nameA)
-        const isTamilB = /tamil|தமிழ்/.test(nameB)
-        const isEnglishA = /english/.test(nameA)
-        const isEnglishB = /english/.test(nameB)
-
-        if (isTamilA && !isTamilB) return -1
-        if (isTamilB && !isTamilA) return 1
-        if (isEnglishA && !isEnglishB) return 1
-        if (isEnglishB && !isEnglishA) return -1
-
-        return 0
-    })
-
-    let name = ""
-    versions.forEach((id, i) => {
-        if (i > 0) name += " + "
-        if (id.length < 5) {
-            name += id.toUpperCase()
-        } else {
-            name += getShortBibleName(getBibleName(id))
-        }
-    })
-
-    scriptures.update((a) => {
-        a[uid()] = { name, collection: { versions } }
-        return a
-    })
-
-    activePopup.set(null)
-}
+        activePopup.set(null)
+    }
 </script>
 
 <div class="list">
