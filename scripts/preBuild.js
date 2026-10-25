@@ -23,7 +23,20 @@ function deleteFolderRecursive(folderPath) {
 
     rmdirSync(folderPath)
 }
+function restoreDevelopmentHTML() {
+    if (process.env.NODE_ENV !== "development") return
 
+    const devScriptPath = '<script type="module" src="/src/frontend/main.ts"></script>'
+    const prodHTMLPaths = '<script type="module" crossorigin src="./build/bundle.js"></script><link rel="stylesheet" href="./build/bundle.css">'
+    const sourceIndexPath = join(__dirname, "..", "public", "index.html")
+
+    let htmlContent = readFileSync(sourceIndexPath, "utf8")
+
+    if (htmlContent.includes(prodHTMLPaths)) {
+        htmlContent = htmlContent.replace(prodHTMLPaths, devScriptPath)
+        writeFileSync(sourceIndexPath, htmlContent)
+    }
+}
 // create production configs with no source map
 function generateProdConfigs() {
     const configs = ["svelte", "electron", "server"]
@@ -56,4 +69,5 @@ function getPdfWorkerFile() {
 }
 
 if (process.env.NODE_ENV === "production") generateProdConfigs()
+restoreDevelopmentHTML()
 getPdfWorkerFile()
