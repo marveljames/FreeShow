@@ -79,7 +79,7 @@ function create() {
     })
 
     scriptures.update((a) => {
-        a[uid()] = { name, collection: { versions: [...versions].reverse() } }
+        a[uid()] = { name, collection: { versions } }
         return a
     })
 
